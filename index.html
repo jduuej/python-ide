@@ -1,196 +1,1318 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="FXv3p4v14yiq0eUBJg9R3vD9A5PFDZ13770ac0F4gMU" />
-    <title>Python IDE - Professional Code Editor</title>
+    <title>Python IDE - تحميل البرنامج</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --bg-color: #1e1e1e;
-            --sidebar-bg: #252526;
-            --text-color: #d4d4d4;
-            --accent-color: #007acc;
-            --accent-hover: #0098ff;
-            --keyword-color: #569cd6;
-            --string-color: #ce9178;
-            --comment-color: #6a9955;
-            --terminal-bg: #000000;
-            --terminal-fg: #00ff00;
-            --border-color: #333333;
+            --bg-primary: #1e1e1e;
+            --bg-secondary: #252526;
+            --bg-tertiary: #2d2d2d;
+            --bg-hover: #3e3e3e;
+            --text-primary: #cccccc;
+            --text-secondary: #858585;
+            --text-white: #ffffff;
+            --accent-blue: #007acc;
+            --accent-blue-hover: #1a8ad4;
+            --accent-green: #4ec9b0;
+            --accent-yellow: #dcdcaa;
+            --accent-orange: #ce9178;
+            --accent-purple: #c586c0;
+            --border-color: #3e3e3e;
+            --selection-bg: #094771;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.35);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'Consolas', 'Courier New', monospace;
+            --font-sans: 'Segoe UI', 'Tahoma', sans-serif;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Consolas', 'Courier New', monospace;
-            display: flex;
-            flex-direction: column;
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: var(--text-primary);
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
 
-        header {
-            background-color: var(--sidebar-bg);
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 800px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+        }
+
+        .titlebar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
-            padding: 15px 30px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .control-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .control-dot.red { background: #ff5f56; }
+        .control-dot.yellow { background: #ffbd2e; }
+        .control-dot.green { background: #27c93f; }
+
+        .title-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-white);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .logo {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--text-color);
+        .sidebar-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .mini-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 16px;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .mini-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-white);
+        }
+
+        .file-tree {
+            padding: 8px;
+            overflow-y: auto;
+        }
+
+        .tree-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            padding: 6px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: var(--transition);
+            font-size: 13px;
         }
 
-        .logo span {
-            color: var(--keyword-color);
+        .tree-item:hover {
+            background: var(--bg-hover);
         }
 
-        .hero {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 0 20px;
-            text-align: center;
+        .tree-item.active {
+            background: var(--selection-bg);
+            color: var(--text-white);
+        }
+
+        .tree-item .arrow {
+            font-size: 10px;
+        }
+
+        .tree-item .icon {
+            font-size: 16px;
+        }
+
+        .editor-area {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: #ffffff;
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 12px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        h1 span {
-            color: var(--keyword-color);
+        .tabs {
+            display: flex;
+            overflow-x: auto;
         }
 
-        p.subtitle {
-            font-size: 1.1rem;
-            color: #858585;
-            margin-bottom: 30px;
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-left: 1px solid var(--bg-primary);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            background: var(--bg-primary);
+            color: var(--text-white);
+            border-top: 2px solid var(--accent-blue);
+        }
+
+        .tab:hover {
+            background: var(--bg-hover);
+        }
+
+        .tab-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        .tab-close:hover {
+            background: var(--bg-hover);
+            color: var(--text-white);
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+        }
+
+        .run-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .run-btn:hover {
+            background: var(--accent-blue-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .code-editor {
+            flex: 1;
+            display: flex;
+            overflow-y: auto;
+            font-family: var(--font-mono);
+            font-size: 14px;
             line-height: 1.6;
         }
 
-        .download-btn {
-            background-color: var(--accent-color);
+        .line-numbers {
+            padding: 16px 12px;
+            text-align: right;
+            color: var(--text-secondary);
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+            border-left: 1px solid var(--border-color);
+        }
+
+        .code-content {
+            flex: 1;
+            padding: 16px;
+            color: var(--text-primary);
+            margin: 0;
+            overflow: visible;
+        }
+
+        .keyword { color: #569cd6; font-weight: bold; }
+        .class-name { color: #4ec9b0; }
+        .function { color: #dcdcaa; }
+        .param { color: #9cdcfe; }
+        .builtin { color: #4ec9b0; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+
+        .statusbar {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 8px 16px;
+            background: var(--accent-blue);
             color: white;
-            padding: 14px 35px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-icon {
+            font-size: 14px;
+        }
+
+        .download-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .download-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            color: var(--text-white);
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-hover);
+            color: var(--text-white);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-description {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-size: 16px;
+        }
+
+        .download-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .download-card {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .download-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .download-card h3 {
+            color: var(--text-white);
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .download-card p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .features {
+            list-style: none;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .features li {
+            color: var(--text-primary);
+            padding: 4px 0;
+            font-size: 14px;
+        }
+
+        .download-btn {
             display: inline-block;
-            transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 4px 12px rgba(0, 122, 204, 0.3);
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .download-btn:hover {
-            background-color: var(--accent-hover);
-            transform: translateY(-2px);
+            background: var(--accent-blue-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
         }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
-            margin-top: 60px;
-            text-align: left;
+        .btn-icon {
+            font-size: 18px;
         }
 
-        .feature-card {
-            background-color: var(--sidebar-bg);
-            border: 1px solid var(--border-color);
-            padding: 25px;
-            border-radius: 6px;
+        .file-size {
+            display: block;
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
-        .feature-card h3 {
-            margin-top: 0;
-            color: var(--keyword-color);
-            font-size: 1.1rem;
-        }
-
-        .feature-card p {
-            color: #9cdcfe;
-            font-size: 0.95rem;
-            margin-bottom: 0;
-            line-height: 1.5;
-        }
-
-        .code-preview {
-            background-color: var(--terminal-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 20px;
-            margin-top: 50px;
-            text-align: left;
-            font-size: 0.95rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .code-preview .comment { color: var(--comment-color); }
-        .code-preview .keyword { color: var(--keyword-color); }
-        .code-preview .string { color: var(--string-color); }
-
-        footer {
-            background-color: var(--sidebar-bg);
+        .modal-footer {
+            padding: 16px 24px;
             border-top: 1px solid var(--border-color);
-            text-align: center;
-            padding: 20px;
-            font-size: 0.85rem;
-            color: #858585;
+            text-align: left;
+        }
+
+        .secondary-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .secondary-btn:hover {
+            background: var(--bg-hover);
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            .download-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 200px;
+            }
+            
+            .titlebar {
+                padding: 8px 12px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+            }
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <div class="logo">
-            💻 <span>Python</span> IDE
-        </div>
-        <div style="font-size: 0.9rem; color: #858585;">v1.0.0 Stable</div>
-    </header>
-
-    <div class="hero">
-        <h1>Lightweight & Powerful <span>Python IDE</span></h1>
-        <p class="subtitle">محرر أكواد بايثون احترافي، خفيف الحجم، وداعم للوضع الداكن، التبويبات المتعددة، ميزة التكملة التلقائية، وشاشة Terminal مدمجة.</p>
-        
-        <a href="https://drive.google.com/file/d/1C2sGtUuHf3tKcMLTCtyFe9cfCsf9DMIQ/view?usp=sharing" class="download-btn" target="_blank">Download for Windows (.exe)</a>
-
-        <div class="code-preview">
-            <span class="comment"># Python IDE Built-in Features</span><br>
-            <span class="keyword">def</span> <span style="color: #dcdcaa;">initialize_environment</span>():<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;theme = <span class="string">"Dark Mode"</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;auto_save = <span class="keyword">True</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> f<span class="string">"Ready to code with {theme}!"</span>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card">
-                <h3>⚡ Auto-Complete</h3>
-                <p>اقتراحات ذكية للكلمات المحجوزة والدوال الأساسية أثناء الكتابة لتوفير وقتك.</p>
+    <div class="app-container">
+        <header class="titlebar">
+            <div class="window-controls">
+                <span class="control-dot red"></span>
+                <span class="control-dot yellow"></span>
+                <span class="control-dot green"></span>
             </div>
-            <div class="feature-card">
-                <h3>📂 File Explorer & Tabs</h3>
-                <p>افتح مجلدات مشاريعك بالكامل وتصفح الملفات وعدل على كذا ملف في نفس الوقت.</p>
+            <div class="title-text">Python IDE - Professional Edition</div>
+            <div class="header-actions">
+                <button class="icon-btn">─</button>
+                <button class="icon-btn">□</button>
+                <button class="icon-btn">✕</button>
             </div>
-            <div class="feature-card">
-                <h3>🖥️ Dual Terminals</h3>
-                <p>شغل كودك جوه التيرمينال الداخلي الملون أو في External Terminal لو برنامجك بيطلب Input.</p>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <span>EXPLORER</span>
+                    <div class="sidebar-actions">
+                        <button class="mini-btn" title="ملف جديد">+</button>
+                        <button class="mini-btn" title="تحديث">⟳</button>
+                    </div>
+                </div>
+                <div class="file-tree">
+                    <div class="tree-item folder">
+                        <span class="arrow">▾</span>
+                        <span class="icon">📁</span>
+                        <span>python_ide</span>
+                    </div>
+                    <div class="tree-item file active">
+                        <span class="icon">🐍</span>
+                        <span>main.py</span>
+                    </div>
+                    <div class="tree-item file">
+                        <span class="icon">🐍</span>
+                        <span>editor.py</span>
+                    </div>
+                    <div class="tree-item file">
+                        <span class="icon">🐍</span>
+                        <span>terminal.py</span>
+                    </div>
+                    <div class="tree-item file">
+                        <span class="icon">⚙️</span>
+                        <span>requirements.txt</span>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="editor-area">
+                <div class="editor-header">
+                    <div class="tabs">
+                        <div class="tab active">
+                            <span>🐍</span>
+                            main.py
+                            <button class="tab-close">✕</button>
+                        </div>
+                        <div class="tab">
+                            <span>🐍</span>
+                            editor.py
+                            <button class="tab-close">✕</button>
+                        </div>
+                    </div>
+                    <div class="editor-actions">
+                        <button class="run-btn" onclick="showDownload()">▶ تحميل</button>
+                    </div>
+                </div>
+
+                <div class="code-editor">
+                    <div class="line-numbers">
+                        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                        <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                        <span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+                    </div>
+                    <pre class="code-content">
+<span class="keyword">import</span> sys
+<span class="keyword">from</span> PyQt6.QtWidgets <span class="keyword">import</span> *
+<span class="keyword">from</span> PyQt6.QtCore <span class="keyword">import</span> *
+<span class="keyword">from</span> PyQt6.QtGui <span class="keyword">import</span> *
+
+<span class="keyword">class</span> <span class="class-name">MainWindow</span>(QMainWindow):
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="param">self</span>):
+        <span class="builtin">super</span>().__init__()
+        <span class="param">self</span>.setWindowTitle(<span class="string">"Python IDE"</span>)
+        <span class="param">self</span>.setGeometry(<span class="number">100</span>, <span class="number">100</span>, <span class="number">1200</span>, <span class="number">800</span>)
+        <span class="param">self</span>.setup_ui()
+
+    <span class="keyword">def</span> <span class="function">setup_ui</span>(<span class="param">self</span>):
+        <span class="param">self</span>.editor = QPlainTextEdit()
+        <span class="param">self</span>.setCentralWidget(<span class="param">self</span>.editor)
+
+<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+        <footer class="statusbar">
+            <div class="status-item">
+                <span class="status-icon">🔵</span>
+                <span>Ln 1, Col 1</span>
+            </div>
+            <div class="status-item">
+                <span class="status-icon">🐍</span>
+                <span>Python 3.11</span>
+            </div>
+            <div class="status-item">
+                <span class="status-icon">📝</span>
+                <span>UTF-8</span>
+            </div>
+            <div class="status-item">
+                <span class="status-icon">✅</span>
+                <span>جاهز للتحميل</span>
+            </div>
+        </footer>
+    </div>
+
+    <div class="download-modal" id="downloadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>تحميل Python IDE</h2>
+                <button class="modal-close" onclick="closeDownload()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">اختر النسخة المناسبة لك</p>
+                <div class="download-options">
+                    <div class="download-card python-card">
+                        <div class="card-icon">🐍</div>
+                        <h3>ملف بايثون خام</h3>
+                        <p>الكود المصدري الكامل</p>
+                        <ul class="features">
+                            <li>✓ كود مفتوح المصدر</li>
+                            <li>✓ قابل للتعديل</li>
+                            <li>✓ يتطلب Python 3.8+</li>
+                        </ul>
+                        <button class="download-btn" onclick="downloadPython()">
+                            <span class="btn-icon">⬇</span>
+                            تحميل main.py
+                        </button>
+                        <span class="file-size">حجم الملف: 45 KB</span>
+                    </div>
+                    <div class="download-card exe-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>نسخة EXE</h3>
+                        <p>جاهز للتشغيل مباشرة</p>
+                        <ul class="features">
+                            <li>✓ لا يتطلب تثبيت Python</li>
+                            <li>✓ يعمل على Windows</li>
+                            <li>✓ سهل الاستخدام</li>
+                        </ul>
+                        <a href="https://drive.google.com/file/d/1C2sGtUuHf3tKcMLTCtyFe9cfCsf9DMIQ/view?usp=drive_link" class="download-btn" target="_blank">
+                            <span class="btn-icon">⬇</span>
+                            تحميل Python IDE.exe
+                        </a>
+                        <span class="file-size">حجم الملف: 85 MB</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" onclick="closeDownload()">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Python IDE Project. Developed with Python & Tkinter.</p>
-    </footer>
+    <script>
+        function showDownload() {
+            document.getElementById('downloadModal').classList.add('active');
+        }
 
+        function closeDownload() {
+            document.getElementById('downloadModal').classList.remove('active');
+        }
+
+        function downloadPython() {
+            const pythonCode = `import sys
+import os
+from pathlib import Path
+from typing import Optional, Dict, List
+
+os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
+os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+os.environ["QT_SCALE_FACTOR_ROUNDING_POLICY"] = "PassThrough"
+
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtCore import Qt
+
+QApplication.setHighDpiScaleFactorRoundingPolicy(
+    Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
+)
+
+import jedi
+
+
+class PythonHighlighter(QSyntaxHighlighter):
+    def __init__(self, document):
+        super().__init__(document)
+        self.formats = {}
+        self._setup_formats()
+        self._setup_rules()
+
+    def _setup_formats(self):
+        self.formats = {
+            'keyword': self._make_format('#569cd6', bold=True),
+            'builtin': self._make_format('#4ec9b0'),
+            'string': self._make_format('#ce9178'),
+            'docstring': self._make_format('#ce9178', italic=True),
+            'comment': self._make_format('#6a9955', italic=True),
+            'decorator': self._make_format('#dcdcaa'),
+            'number': self._make_format('#b5cea8'),
+            'self': self._make_format('#569cd6', italic=True),
+            'function': self._make_format('#dcdcaa'),
+            'class': self._make_format('#4ec9b0', bold=True),
+        }
+
+    def _make_format(self, color, bold=False, italic=False):
+        fmt = QTextCharFormat()
+        fmt.setForeground(QColor(color))
+        if bold:
+            fmt.setFontWeight(QFont.Weight.Bold)
+        if italic:
+            fmt.setFontItalic(True)
+        return fmt
+
+    def _setup_rules(self):
+        self.rules = []
+        keywords = [
+            '\\\\bdef\\\\b', '\\\\bclass\\\\b', '\\\\bif\\\\b', '\\\\belif\\\\b', '\\\\belse\\\\b',
+            '\\\\bfor\\\\b', '\\\\bwhile\\\\b', '\\\\breturn\\\\b', '\\\\bimport\\\\b', '\\\\bfrom\\\\b',
+            '\\\\bas\\\\b', '\\\\btry\\\\b', '\\\\bexcept\\\\b', '\\\\bfinally\\\\b', '\\\\bwith\\\\b',
+            '\\\\bpass\\\\b', '\\\\bbreak\\\\b', '\\\\bcontinue\\\\b', '\\\\bglobal\\\\b', '\\\\bnonlocal\\\\b',
+            '\\\\blambda\\\\b', '\\\\bassert\\\\b', '\\\\braise\\\\b', '\\\\bdel\\\\b', '\\\\bin\\\\b',
+            '\\\\bnot\\\\b', '\\\\band\\\\b', '\\\\bor\\\\b', '\\\\bis\\\\b', '\\\\bNone\\\\b',
+            '\\\\bTrue\\\\b', '\\\\bFalse\\\\b', '\\\\byield\\\\b', '\\\\basync\\\\b', '\\\\bawait\\\\b'
+        ]
+        for pattern in keywords:
+            self.rules.append((QRegularExpression(pattern), self.formats['keyword']))
+        builtins = [
+            '\\\\bprint\\\\b', '\\\\blen\\\\b', '\\\\brange\\\\b', '\\\\btype\\\\b', '\\\\bint\\\\b',
+            '\\\\bstr\\\\b', '\\\\bfloat\\\\b', '\\\\blist\\\\b', '\\\\bdict\\\\b', '\\\\bset\\\\b',
+            '\\\\btuple\\\\b', '\\\\bbool\\\\b', '\\\\bsuper\\\\b', '\\\\bobject\\\\b', '\\\\bisinstance\\\\b',
+            '\\\\bissubclass\\\\b', '\\\\bhasattr\\\\b', '\\\\bgetattr\\\\b', '\\\\bsetattr\\\\b',
+            '\\\\bdelattr\\\\b', '\\\\bcallable\\\\b', '\\\\biter\\\\b', '\\\\bnext\\\\b', '\\\\bzip\\\\b',
+            '\\\\benumerate\\\\b', '\\\\bmap\\\\b', '\\\\bfilter\\\\b', '\\\\breduce\\\\b', '\\\\bsorted\\\\b',
+            '\\\\breversed\\\\b', '\\\\bmin\\\\b', '\\\\bmax\\\\b', '\\\\bsum\\\\b', '\\\\babs\\\\b',
+            '\\\\bround\\\\b', '\\\\bdivmod\\\\b', '\\\\bpow\\\\b', '\\\\bhex\\\\b', '\\\\boct\\\\b',
+            '\\\\bbin\\\\b', '\\\\bformat\\\\b', '\\\\brepr\\\\b', '\\\\binput\\\\b', '\\\\bopen\\\\b',
+            '\\\\bread\\\\b', '\\\\breadline\\\\b', '\\\\breadlines\\\\b', '\\\\bwrite\\\\b', '\\\\bclose\\\\b',
+            '\\\\bappend\\\\b', '\\\\binsert\\\\b', '\\\\bremove\\\\b', '\\\\bpop\\\\b', '\\\\bindex\\\\b',
+            '\\\\bcount\\\\b', '\\\\bjoin\\\\b', '\\\\bsplit\\\\b', '\\\\breplace\\\\b', '\\\\bstrip\\\\b',
+            '\\\\bformat\\\\b', '\\\\bkeys\\\\b', '\\\\bvalues\\\\b', '\\\\bitems\\\\b', '\\\\bupdate\\\\b'
+        ]
+        for pattern in builtins:
+            self.rules.append((QRegularExpression(pattern), self.formats['builtin']))
+        self.rules.append((QRegularExpression('\\\\bself\\\\b'), self.formats['self']))
+        self.rules.append((QRegularExpression('@\\\\w+'), self.formats['decorator']))
+        self.rules.append((QRegularExpression('\\\\b\\\\d+(\\\\.\\\\d+)?\\\\b'), self.formats['number']))
+        self.rules.append((QRegularExpression('\\\\b\\\\w+(?=\\\\()'), self.formats['function']))
+
+    def highlightBlock(self, text):
+        for pattern, format in self.rules:
+            matches = pattern.globalMatch(text)
+            while matches.hasNext():
+                match = matches.next()
+                self.setFormat(match.capturedStart(), match.capturedLength(), format)
+        self._highlight_strings_and_comments(text)
+
+    def _highlight_strings_and_comments(self, text):
+        in_string = False
+        string_char = None
+        string_start = 0
+        is_docstring = False
+        for i, char in enumerate(text):
+            if not in_string and char == '#':
+                self.setFormat(i, len(text) - i, self.formats['comment'])
+                break
+            if not in_string:
+                if text[i:i+3] in ['"""', "'''"]:
+                    in_string = True
+                    string_char = text[i:i+3]
+                    string_start = i
+                    is_docstring = True
+                    i += 2
+                    continue
+                elif char in ['"', "'"]:
+                    in_string = True
+                    string_char = char
+                    string_start = i
+            else:
+                if text[i:i+len(string_char)] == string_char:
+                    if is_docstring:
+                        length = i + 3 - string_start
+                        self.setFormat(string_start, length, self.formats['docstring'])
+                        in_string = False
+                        string_char = None
+                        is_docstring = False
+                        i += len(string_char) - 1
+                    else:
+                        length = i + 1 - string_start
+                        self.setFormat(string_start, length, self.formats['string'])
+                        in_string = False
+                        string_char = None
+
+
+class LineNumberArea(QWidget):
+    def __init__(self, editor):
+        super().__init__(editor)
+        self.editor = editor
+
+    def sizeHint(self):
+        return QSize(self.editor.line_number_area_width(), 0)
+
+    def paintEvent(self, event):
+        self.editor.line_number_area_paint_event(event)
+
+
+class CodeEditor(QPlainTextEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.highlighter = PythonHighlighter(self.document())
+        self.line_number_area = LineNumberArea(self)
+        self.blockCountChanged.connect(self.update_line_number_area_width)
+        self.updateRequest.connect(self.update_line_number_area)
+        self.cursorPositionChanged.connect(self.highlight_current_line)
+        self.update_line_number_area_width(0)
+        self.highlight_current_line()
+        self.setup_editor()
+        self.setup_bracket_matching()
+
+    def setup_editor(self):
+        font = QFont("Consolas", 12)
+        font.setStyleHint(QFont.StyleHint.Monospace)
+        font.setFixedPitch(True)
+        self.setFont(font)
+        self.setTabStopDistance(QFontMetricsF(self.font()).horizontalAdvance(' ') * 4)
+        self.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap)
+        self.setFrameStyle(QFrame.Shape.NoFrame)
+        self.setStyleSheet("""
+            QPlainTextEdit {
+                background-color: #1e1e1e;
+                color: #d4d4d4;
+                border: none;
+                selection-background-color: #264f78;
+                selection-color: #ffffff;
+            }
+        """)
+
+    def setup_bracket_matching(self):
+        self.bracket_pairs = {'(': ')', '[': ']', '{': '}', '"': '"', "'": "'"}
+
+    def keyPressEvent(self, event):
+        if event.text() in self.bracket_pairs:
+            cursor = self.textCursor()
+            if cursor.hasSelection():
+                start = cursor.selectionStart()
+                end = cursor.selectionEnd()
+                cursor.setPosition(start)
+                cursor.insertText(event.text())
+                cursor.setPosition(end + 1)
+                cursor.insertText(self.bracket_pairs[event.text()])
+                cursor.setPosition(start + 1)
+                cursor.setPosition(end + 1, QTextCursor.MoveMode.KeepAnchor)
+                self.setTextCursor(cursor)
+                return
+            cursor.insertText(event.text() + self.bracket_pairs[event.text()])
+            cursor.movePosition(QTextCursor.MoveOperation.Left, QTextCursor.MoveMode.MoveAnchor)
+            self.setTextCursor(cursor)
+            return
+        if event.key() == Qt.Key.Key_Tab:
+            cursor = self.textCursor()
+            if cursor.hasSelection():
+                self.indent_selection()
+                return
+            else:
+                self.insertPlainText("    ")
+                return
+        if event.key() == Qt.Key.Key_Backtab:
+            self.dedent_selection()
+            return
+        super().keyPressEvent(event)
+
+    def indent_selection(self):
+        cursor = self.textCursor()
+        start = cursor.document().findBlock(cursor.selectionStart()).blockNumber()
+        end = cursor.document().findBlock(cursor.selectionEnd()).blockNumber()
+        cursor.beginEditBlock()
+        for i in range(start, end + 1):
+            block = cursor.document().findBlockByNumber(i)
+            cursor.setPosition(block.position())
+            cursor.insertText("    ")
+        cursor.endEditBlock()
+
+    def dedent_selection(self):
+        cursor = self.textCursor()
+        start = cursor.document().findBlock(cursor.selectionStart()).blockNumber()
+        end = cursor.document().findBlock(cursor.selectionEnd()).blockNumber()
+        cursor.beginEditBlock()
+        for i in range(start, end + 1):
+            block = cursor.document().findBlockByNumber(i)
+            text = block.text()
+            if text.startswith("    "):
+                cursor.setPosition(block.position())
+                cursor.setPosition(block.position() + 4, QTextCursor.MoveMode.KeepAnchor)
+                cursor.removeSelectedText()
+        cursor.endEditBlock()
+
+    def line_number_area_width(self):
+        digits = len(str(max(1, self.blockCount())))
+        space = 3 + self.fontMetrics().horizontalAdvance('9') * digits
+        return space
+
+    def update_line_number_area_width(self, _):
+        self.setViewportMargins(self.line_number_area_width(), 0, 0, 0)
+
+    def update_line_number_area(self, rect, dy):
+        if dy:
+            self.line_number_area.scroll(0, dy)
+        else:
+            self.line_number_area.update(0, rect.y(), self.line_number_area.width(), rect.height())
+        if rect.contains(self.viewport().rect()):
+            self.update_line_number_area_width(0)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        cr = self.contentsRect()
+        self.line_number_area.setGeometry(QRect(cr.left(), cr.top(), self.line_number_area_width(), cr.height()))
+
+    def line_number_area_paint_event(self, event):
+        painter = QPainter(self.line_number_area)
+        painter.fillRect(event.rect(), QColor("#1e1e1e"))
+        block = self.firstVisibleBlock()
+        block_number = block.blockNumber()
+        top = round(self.blockBoundingGeometry(block).translated(self.contentOffset()).top())
+        bottom = top + round(self.blockBoundingRect(block).height())
+        while block.isValid() and top <= event.rect().bottom():
+            if block.isVisible() and bottom >= event.rect().top():
+                number = str(block_number + 1)
+                painter.setPen(QColor("#858585"))
+                painter.drawText(0, top, self.line_number_area.width() - 5, self.fontMetrics().height(),
+                               Qt.AlignmentFlag.AlignRight, number)
+            block = block.next()
+            top = bottom
+            bottom = top + round(self.blockBoundingRect(block).height())
+            block_number += 1
+
+    def highlight_current_line(self):
+        extra_selections = []
+        if not self.isReadOnly():
+            selection = QTextEdit.ExtraSelection()
+            line_color = QColor("#2a2a2a")
+            selection.format.setBackground(line_color)
+            selection.format.setProperty(QTextFormat.Property.FullWidthSelection, True)
+            selection.cursor = self.textCursor()
+            selection.cursor.clearSelection()
+            extra_selections.append(selection)
+        self.setExtraSelections(extra_selections)
+
+
+class TerminalWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setup_ui()
+        self.process = None
+
+    def setup_ui(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.output = QPlainTextEdit()
+        self.output.setReadOnly(True)
+        self.output.setStyleSheet("""
+            QPlainTextEdit {
+                background-color: #1e1e1e;
+                color: #d4d4d4;
+                font-family: Consolas;
+                font-size: 11pt;
+                border: none;
+            }
+        """)
+        self.input_widget = QWidget()
+        input_layout = QHBoxLayout(self.input_widget)
+        input_layout.setContentsMargins(0, 0, 0, 0)
+        self.prompt_label = QLabel(">>> ")
+        self.prompt_label.setStyleSheet("color: #4ec9b0; font-weight: bold;")
+        self.input_field = QLineEdit()
+        self.input_field.setStyleSheet("""
+            QLineEdit {
+                background-color: #2a2a2a;
+                color: #d4d4d4;
+                border: none;
+                padding: 5px;
+                font-family: Consolas;
+                font-size: 11pt;
+            }
+        """)
+        self.input_field.returnPressed.connect(self.send_input)
+        input_layout.addWidget(self.prompt_label)
+        input_layout.addWidget(self.input_field)
+        layout.addWidget(self.output)
+        layout.addWidget(self.input_widget)
+        self.input_widget.hide()
+
+    def append_output(self, text, color="#d4d4d4"):
+        cursor = self.output.textCursor()
+        cursor.movePosition(QTextCursor.MoveOperation.End)
+        format = QTextCharFormat()
+        format.setForeground(QColor(color))
+        cursor.insertText(text, format)
+        self.output.setTextCursor(cursor)
+        self.output.ensureCursorVisible()
+
+    def run_command(self, command, working_dir=None):
+        self.output.clear()
+        self.process = QProcess(self)
+        self.process.setProcessChannelMode(QProcess.ProcessChannelMode.MergedChannels)
+        if working_dir:
+            self.process.setWorkingDirectory(working_dir)
+        self.process.readyReadStandardOutput.connect(self._read_output)
+        self.process.readyReadStandardError.connect(self._read_error)
+        self.process.finished.connect(self._process_finished)
+        self.process.start(command[0], command[1:])
+        self.append_output(f"$ {' '.join(command)}\\n", "#4ec9b0")
+
+    def _read_output(self):
+        if self.process:
+            data = self.process.readAllStandardOutput()
+            text = bytes(data).decode('utf-8', errors='replace')
+            self.append_output(text, "#d4d4d4")
+
+    def _read_error(self):
+        if self.process:
+            data = self.process.readAllStandardError()
+            text = bytes(data).decode('utf-8', errors='replace')
+            self.append_output(text, "#f48771")
+
+    def _process_finished(self, exit_code, exit_status):
+        self.input_widget.hide()
+        status_color = "#4ec9b0" if exit_code == 0 else "#f48771"
+        self.append_output(f"\\nProcess finished with exit code {exit_code}\\n", status_color)
+
+    def send_input(self):
+        if self.process and self.process.state() == QProcess.ProcessState.Running:
+            text = self.input_field.text() + '\\n'
+            self.process.write(text.encode())
+            self.append_output(text, "#ffffff")
+            self.input_field.clear()
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Python IDE")
+        self.setGeometry(100, 100, 1400, 900)
+        self.current_file_path = None
+        self.setup_ui()
+        self.setup_menu()
+        self.setup_status_bar()
+
+    def setup_ui(self):
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        main_layout = QVBoxLayout(central_widget)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+        
+        self.main_splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.file_tree = QTreeWidget()
+        self.file_tree.setHeaderLabel("Project")
+        self.file_tree.setStyleSheet("""
+            QTreeWidget {
+                background-color: #252526;
+                color: #cccccc;
+                border: none;
+                font-size: 12pt;
+            }
+        """)
+        
+        self.right_splitter = QSplitter(Qt.Orientation.Vertical)
+        self.editor_tabs = QTabWidget()
+        self.editor_tabs.setTabsClosable(True)
+        self.editor_tabs.tabCloseRequested.connect(self.close_tab)
+        
+        self.editor = CodeEditor()
+        self.editor_tabs.addTab(self.editor, "main.py")
+        
+        self.terminal = TerminalWidget()
+        
+        self.right_splitter.addWidget(self.editor_tabs)
+        self.right_splitter.addWidget(self.terminal)
+        self.right_splitter.setSizes([600, 300])
+        
+        self.main_splitter.addWidget(self.file_tree)
+        self.main_splitter.addWidget(self.right_splitter)
+        self.main_splitter.setSizes([250, 1150])
+        
+        main_layout.addWidget(self.main_splitter)
+        
+        self.setStyleSheet("""
+            QMainWindow { background-color: #1e1e1e; }
+            QMenuBar { background-color: #2d2d2d; color: #cccccc; padding: 3px; }
+            QMenuBar::item { padding: 5px 10px; }
+            QMenuBar::item:selected { background-color: #3e3e3e; }
+            QMenu { background-color: #2d2d2d; color: #cccccc; border: 1px solid #3e3e3e; }
+            QMenu::item:selected { background-color: #094771; }
+            QTabWidget::pane { border: none; }
+            QTabBar::tab { background-color: #2d2d2d; color: #cccccc; padding: 8px 15px; }
+            QTabBar::tab:selected { background-color: #1e1e1e; color: #ffffff; border-top: 2px solid #007acc; }
+            QStatusBar { background-color: #007acc; color: #ffffff; }
+            QSplitter::handle { background-color: #2d2d2d; }
+        """)
+
+    def setup_menu(self):
+        menubar = self.menuBar()
+        file_menu = menubar.addMenu("&File")
+        
+        new_action = QAction("&New", self)
+        new_action.setShortcut("Ctrl+N")
+        new_action.triggered.connect(self.new_file)
+        file_menu.addAction(new_action)
+        
+        open_action = QAction("&Open...", self)
+        open_action.setShortcut("Ctrl+O")
+        open_action.triggered.connect(self.open_file)
+        file_menu.addAction(open_action)
+        
+        save_action = QAction("&Save", self)
+        save_action.setShortcut("Ctrl+S")
+        save_action.triggered.connect(self.save_file)
+        file_menu.addAction(save_action)
+        
+        file_menu.addSeparator()
+        
+        exit_action = QAction("E&xit", self)
+        exit_action.triggered.connect(self.close)
+        file_menu.addAction(exit_action)
+        
+        run_menu = menubar.addMenu("&Run")
+        run_action = QAction("&Run Python File", self)
+        run_action.setShortcut("F5")
+        run_action.triggered.connect(self.run_file)
+        run_menu.addAction(run_action)
+
+    def setup_status_bar(self):
+        status_bar = self.statusBar()
+        self.line_col_label = QLabel("Ln 1, Col 1")
+        status_bar.addPermanentWidget(self.line_col_label)
+        
+        self.encoding_label = QLabel("UTF-8")
+        status_bar.addPermanentWidget(self.encoding_label)
+        
+        self.python_label = QLabel(f"Python: {sys.version.split()[0]}")
+        status_bar.addPermanentWidget(self.python_label)
+        
+        self.editor.cursorPositionChanged.connect(self.update_status_bar)
+
+    def update_status_bar(self):
+        cursor = self.editor.textCursor()
+        line = cursor.blockNumber() + 1
+        col = cursor.columnNumber() + 1
+        self.line_col_label.setText(f"Ln {line}, Col {col}")
+
+    def new_file(self):
+        editor = CodeEditor()
+        index = self.editor_tabs.addTab(editor, "Untitled")
+        self.editor_tabs.setCurrentIndex(index)
+
+    def open_file(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, "Open Python File", "", "Python Files (*.py);;All Files (*)")
+        if file_path:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            editor = CodeEditor()
+            editor.setPlainText(content)
+            editor.setProperty('file_path', file_path)
+            index = self.editor_tabs.addTab(editor, os.path.basename(file_path))
+            self.editor_tabs.setCurrentIndex(index)
+            self.current_file_path = file_path
+
+    def save_file(self):
+        editor = self.editor_tabs.currentWidget()
+        if not editor:
+            return
+        file_path = editor.property('file_path')
+        if not file_path:
+            file_path, _ = QFileDialog.getSaveFileName(self, "Save Python File", "", "Python Files (*.py)")
+            if not file_path:
+                return
+            editor.setProperty('file_path', file_path)
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(editor.toPlainText())
+        self.statusBar().showMessage("File saved", 2000)
+
+    def close_tab(self, index):
+        if self.editor_tabs.count() > 1:
+            self.editor_tabs.removeTab(index)
+
+    def run_file(self):
+        editor = self.editor_tabs.currentWidget()
+        if not editor:
+            return
+        file_path = editor.property('file_path')
+        if not file_path:
+            self.save_file()
+            file_path = editor.property('file_path')
+            if not file_path:
+                return
+        interpreter = sys.executable
+        working_dir = os.path.dirname(file_path)
+        self.terminal.run_command([interpreter, file_path], working_dir)
+
+
+def main():
+    QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    app = QApplication(sys.argv)
+    app.setApplicationName("Python IDE")
+    font = QFont("Segoe UI", 10)
+    font.setStyleStrategy(QFont.StyleStrategy.PreferAntialias)
+    app.setFont(font)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main()`;
+
+            const blob = new Blob([pythonCode], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'main.py';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            closeDownload();
+            alert('تم تحميل ملف main.py بنجاح!');
+        }
+
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('downloadModal');
+            if (e.target === modal) {
+                closeDownload();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDownload();
+            }
+        });
+    </script>
 </body>
 </html>
