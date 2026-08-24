@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ahmedbadrakhan python-ide</title>
+    <title>Python IDE - تحميل البرنامج</title>
     <style>
         * {
             margin: 0;
@@ -1211,7 +1211,7 @@ class MainWindow(QMainWindow):
         self.encoding_label = QLabel("UTF-8")
         status_bar.addPermanentWidget(self.encoding_label)
         
-        self.python_label = QLabel(f"Python: {sys.version.split()[0]}")
+        self.python_label = QLabel("Python: System")
         status_bar.addPermanentWidget(self.python_label)
         
         self.editor.cursorPositionChanged.connect(self.update_status_bar)
@@ -1257,6 +1257,17 @@ class MainWindow(QMainWindow):
         if self.editor_tabs.count() > 1:
             self.editor_tabs.removeTab(index)
 
+    def detect_python_interpreter(self):
+        venv_path = Path.cwd() / '.venv'
+        if venv_path.exists():
+            if os.name == 'nt':
+                python_path = venv_path / 'Scripts' / 'python.exe'
+            else:
+                python_path = venv_path / 'bin' / 'python'
+            if python_path.exists():
+                return str(python_path)
+        return "python" if os.name == 'nt' else "python3"
+
     def run_file(self):
         editor = self.editor_tabs.currentWidget()
         if not editor:
@@ -1267,7 +1278,7 @@ class MainWindow(QMainWindow):
             file_path = editor.property('file_path')
             if not file_path:
                 return
-        interpreter = sys.executable
+        interpreter = self.detect_python_interpreter()
         working_dir = os.path.dirname(file_path)
         self.terminal.run_command([interpreter, file_path], working_dir)
 
@@ -1315,4 +1326,4 @@ if __name__ == "__main__":
         });
     </script>
 </body>
-</html>
+</html>        
